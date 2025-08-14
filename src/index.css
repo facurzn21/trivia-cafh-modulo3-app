@@ -1,0 +1,473 @@
+:root {
+  --color-primario: #6366f1; /* Color indigo para testing */
+  --color-primario-hover: #4f46e5;
+  --color-texto: #333;
+  --color-fondo: #f3f4f6;
+  --color-tarjeta: white;
+  --color-borde: #e5e7eb;
+  --color-correcto: #d1fae5;
+  --color-incorrecto: #fee2e2;
+  --color-explicacion: #fff8db;         /* fondo amarillo suave */
+  --color-explicacion-borde: #f6c343;   /* borde amarillo */
+  --sombra: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --radio: 0.5rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  background-color: var(--color-fondo);
+  color: var(--color-texto);
+}
+
+/* ========== ESTILOS PARA PANTALLA DE INICIO ========== */
+.pantalla-inicio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 2rem 1rem;
+  text-align: center;
+  background-color: var(--color-fondo);
+}
+
+.pantalla-inicio h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: var(--color-primario);
+  margin-bottom: 1rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.pantalla-inicio p {
+  font-size: 1.2rem;
+  margin-bottom: 2.5rem;
+  color: #666;
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.botones-seleccion {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 450px;
+}
+
+.btn-seleccion {
+  padding: 1.2rem 1.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background-color: var(--color-primario);
+  color: white;
+  border: none;
+  border-radius: var(--radio);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: var(--sombra);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-seleccion:hover {
+  background-color: var(--color-primario-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.btn-seleccion:active {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(99, 102, 241, 0.2);
+}
+
+.btn-volver {
+  position: fixed;
+  top: 1.5rem;
+  left: 1.5rem;
+  padding: 0.75rem 1.2rem;
+  background-color: var(--color-tarjeta);
+  color: var(--color-primario);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio);
+  cursor: pointer;
+  z-index: 100;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  box-shadow: var(--sombra);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.btn-volver:hover {
+  background-color: #f9fafb;
+  color: var(--color-primario-hover);
+  transform: translateX(-2px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ========== ESTILOS PARA TRIVIA ========== */
+.trivia-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+}
+
+.trivia-card {
+  width: 100%;
+  max-width: 42rem;
+  background-color: var(--color-tarjeta);
+  border-radius: var(--radio);
+  box-shadow: var(--sombra);
+  padding: 1.5rem;
+}
+
+.trivia-title {
+  font-size: 1.875rem;
+  font-weight: bold;
+  text-align: center;
+  color: var(--color-primario);
+  margin-bottom: 2rem;
+}
+
+.progreso {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  color: #666;
+  font-size: 0.875rem;
+}
+
+.pregunta-container {
+  margin-bottom: 2rem;
+}
+
+.pregunta-texto {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.opciones-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.opcion {
+  width: 100%;
+  text-align: left;
+  padding: 0.75rem;
+  border-radius: var(--radio);
+  background-color: var(--color-tarjeta);
+  border: 1px solid var(--color-borde);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.opcion:hover:not(:disabled) {
+  background-color: #f9fafb;
+}
+
+.opcion.correcta {
+  background-color: var(--color-correcto);
+  border-color: #10b981;
+}
+
+.opcion.incorrecta {
+  background-color: var(--color-incorrecto);
+  border-color: #ef4444;
+}
+
+.opcion.deshabilitada {
+  opacity: 0.7;
+  cursor: default;
+}
+
+.explicacion {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--color-explicacion);
+  border: 1px solid #bfdbfe;
+  border-radius: var(--radio);
+}
+
+.explicacion h3 {
+  font-weight: 600;
+  color: #1e40af;
+  margin-bottom: 0.5rem;
+}
+
+.btn-siguiente, .btn-reiniciar {
+  width: 100%;
+  background-color: var(--color-primario);
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: var(--radio);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-siguiente:hover, .btn-reiniciar:hover {
+  background-color: var(--color-primario-hover);
+}
+
+.resultado {
+  text-align: center;
+}
+
+.resultado h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+.resultado-puntuacion {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.resultado-porcentaje {
+  font-size: 1.125rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablets grandes y Desktop */
+@media (min-width: 900px) {
+  .pantalla-inicio {
+    padding: 2rem;
+  }
+  
+  .pantalla-inicio h1 {
+    font-size: 3.2rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pantalla-inicio p {
+    font-size: 1.4rem;
+    margin-bottom: 3rem;
+  }
+  
+  .botones-seleccion {
+    flex-direction: row;
+    max-width: 1200px;
+    gap: 1.5rem;
+  }
+  
+  .btn-seleccion {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    font-size: 1.05rem;
+    min-width: 0; /* Permite que los botones se encojan si es necesario */
+  }
+}
+
+/* Desktop extra grande */
+@media (min-width: 1200px) {
+  .botones-seleccion {
+    max-width: 1400px;
+    gap: 2rem;
+  }
+  
+  .btn-seleccion {
+    padding: 1.5rem 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* ==== Grid para el menú de cuestionarios ==== */
+.grid-cuestionarios {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* Botón "card" del cuestionario */
+.btn-cuestionario {
+  background-color: var(--color-primario);
+  color: #fff;
+  border: none;
+  border-radius: var(--radio);
+  padding: 1rem;
+  box-shadow: var(--sombra);
+  cursor: pointer;
+  transition: transform .2s ease, box-shadow .2s ease, background-color .2s ease;
+  /* para envolver bien el texto */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  line-height: 1.2;
+  white-space: normal;
+  text-align: center;
+  min-height: 110px;           /* altura cómoda */
+}
+
+.btn-cuestionario:hover:not(:disabled) {
+  background-color: var(--color-primario-hover);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, .3);
+}
+
+.btn-cuestionario:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+.cuest-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+
+.cuest-sub {
+  margin-top: .25rem;
+  opacity: .9;
+  font-weight: 600;
+}
+
+/* Ajuste responsive: más columnas en pantallas grandes */
+@media (min-width: 1400px) {
+  .grid-cuestionarios {
+    max-width: 1300px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  }
+}
+
+
+/* Tablets medianas */
+@media (min-width: 768px) and (max-width: 899px) {
+  .pantalla-inicio {
+    padding: 2rem;
+  }
+  
+  .pantalla-inicio h1 {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pantalla-inicio p {
+    font-size: 1.3rem;
+    margin-bottom: 3rem;
+  }
+  
+  .botones-seleccion {
+    max-width: 600px;
+    gap: 1.5rem;
+  }
+  
+  .btn-seleccion {
+    padding: 1.4rem 1.5rem;
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablets pequeñas */
+@media (min-width: 640px) and (max-width: 767px) {
+  .pantalla-inicio h1 {
+    font-size: 2.8rem;
+  }
+  
+  .pantalla-inicio p {
+    font-size: 1.25rem;
+    margin-bottom: 2.5rem;
+  }
+  
+  .botones-seleccion {
+    max-width: 500px;
+  }
+  
+  .btn-seleccion {
+    padding: 1.3rem 1.5rem;
+    font-size: 1.15rem;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .trivia-card {
+    padding: 1rem;
+  }
+  
+  .trivia-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .pregunta-texto {
+    font-size: 1.125rem;
+  }
+
+  .pantalla-inicio {
+    padding: 1rem;
+  }
+  
+  .pantalla-inicio h1 {
+    font-size: 2rem;
+  }
+  
+  .pantalla-inicio p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+  }
+  
+  .botones-seleccion {
+    max-width: 350px;
+    gap: 1.2rem;
+  }
+  
+  .btn-seleccion {
+    padding: 1rem;
+    font-size: 1rem;
+  }
+  
+  .btn-volver {
+    top: 1rem;
+    left: 1rem;
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Móviles muy pequeños */
+@media (max-width: 360px) {
+  .pantalla-inicio h1 {
+    font-size: 1.8rem;
+  }
+  
+  .botones-seleccion {
+    max-width: 300px;
+  }
+  
+  .btn-seleccion {
+    padding: 0.9rem;
+    font-size: 0.95rem;
+  }
+
+
+  .explicacion {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background-color: var(--color-explicacion);
+  border-left: 4px solid var(--color-explicacion-borde);
+  border: none;                 /* quita el borde azul anterior */
+  border-radius: var(--radio);  /* usa tu variable */
+}
+
+}
