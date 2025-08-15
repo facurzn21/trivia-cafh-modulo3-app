@@ -3,10 +3,11 @@ import "./index.css";
 
 // 👇 M3
 import CuestionarioPreParcial1 from "./modules/modulo3/CuestionarioPreParcial1.jsx";
-import CuestionarioPruebaM3 from "./modules/modulo3/CuestionarioPruebaM3.jsx"; // 👈 nuevo
+import CuestionarioPruebaM3 from "./modules/modulo3/CuestionarioPruebaM3.jsx";
+import CuestionarioTeoricoResumenM3 from "./modules/modulo3/CuestionarioTeoricoResumenM3.jsx";
+import CuestionarioTeoricoResumenVersion2 from "./modules/modulo3/CuestionarioTeoricoResumenVersion2.jsx";
 
 export default function App() {
-  // navegación igual que antes
   const [pantalla, setPantalla] = useState(
     localStorage.getItem("pantallaActual") || "inicio"
   );
@@ -42,12 +43,12 @@ export default function App() {
     { id: 5, label: "Módulo 5", disponible: false },
   ];
 
-  // menú del Módulo 3
+  // menú del Módulo 3 (solo los 4 que querés ver)
   const cuestionariosM3 = [
-    { key: "mod3-pre1",   title: "Pre Parcial 1",        sub: "CAFH",            habilitado: true },
-    { key: "mod3-prueba", title: "Prueba (57 preguntas)", sub: "CAFH",           habilitado: true }, // 👈 nuevo
-    { key: "mod3-pre2",   title: "Pre Parcial 2",        sub: "Próximamente",    habilitado: false },
-    { key: "mod3-final",  title: "Final",                sub: "Próximamente",    habilitado: false },
+    { key: "mod3-pre1",       title: "Pre Parcial 1",          sub: "CAFH", habilitado: true },
+    { key: "mod3-prueba",     title: "Prueba (57 preguntas)",  sub: "CAFH", habilitado: true },
+    { key: "mod3-teorico1",   title: "Teórico (Resumen) Claude IA",       sub: "CAFH", habilitado: true },
+    { key: "mod3-teorico2",   title: "Teórico (Resumen v2) ChatGPT",    sub: "CAFH", habilitado: true },
   ];
 
   return (
@@ -136,14 +137,24 @@ export default function App() {
         </>
       )}
 
-      {/* PLACEHOLDERS futuros del M3 */}
-      {["mod3-pre2", "mod3-final"].includes(pantalla) && (
-        <div className="pantalla-inicio">
+      {/* M3 – Teórico (Resumen) */}
+      {pantalla === "mod3-teorico1" && (
+        <>
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
             ← Volver a Módulo 3
           </button>
-          <h2>Próximamente</h2>
-        </div>
+          <CuestionarioTeoricoResumenM3 />
+        </>
+      )}
+
+      {/* M3 – Teórico (Resumen v2) */}
+      {pantalla === "mod3-teorico2" && (
+        <>
+          <button className="btn-volver" onClick={() => go("mod3-menu")}>
+            ← Volver a Módulo 3
+          </button>
+          <CuestionarioTeoricoResumenVersion2 />
+        </>
       )}
     </div>
   );
