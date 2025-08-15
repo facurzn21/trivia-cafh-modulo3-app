@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 
-// 👇 tu cuestionario nuevo (CAFH Módulo 3)
+// 👇 M3
 import CuestionarioPreParcial1 from "./modules/modulo3/CuestionarioPreParcial1.jsx";
+import CuestionarioPruebaM3 from "./modules/modulo3/CuestionarioPruebaM3.jsx"; // 👈 nuevo
 
 export default function App() {
-  // misma mecánica de navegación que usabas
+  // navegación igual que antes
   const [pantalla, setPantalla] = useState(
     localStorage.getItem("pantallaActual") || "inicio"
   );
@@ -32,21 +33,21 @@ export default function App() {
     };
   }, []);
 
-  // menú principal (solo habilito Módulo 3)
+  // menú principal: habilitamos solo Módulo 3
   const modulos = [
     { id: 1, label: "Módulo 1", disponible: false },
     { id: 2, label: "Módulo 2", disponible: false },
-    { id: 3, label: "Módulo 3", disponible: true },   // 👈 habilitado
+    { id: 3, label: "Módulo 3", disponible: true },
     { id: 4, label: "Módulo 4", disponible: false },
     { id: 5, label: "Módulo 5", disponible: false },
   ];
 
   // menú del Módulo 3
-  // por ahora solo el Pre Parcial 1; el resto queda “Próximamente”
   const cuestionariosM3 = [
-    { key: "mod3-pre1", title: "Pre Parcial 1", sub: "CAFH", habilitado: true },
-    { key: "mod3-pre2", title: "Pre Parcial 2", sub: "Próximamente", habilitado: false },
-    { key: "mod3-final", title: "Final", sub: "Próximamente", habilitado: false },
+    { key: "mod3-pre1",   title: "Pre Parcial 1",        sub: "CAFH",            habilitado: true },
+    { key: "mod3-prueba", title: "Prueba (57 preguntas)", sub: "CAFH",           habilitado: true }, // 👈 nuevo
+    { key: "mod3-pre2",   title: "Pre Parcial 2",        sub: "Próximamente",    habilitado: false },
+    { key: "mod3-final",  title: "Final",                sub: "Próximamente",    habilitado: false },
   ];
 
   return (
@@ -115,7 +116,7 @@ export default function App() {
         </div>
       )}
 
-      {/* CUESTIONARIO: M3 – Pre Parcial 1 */}
+      {/* M3 – Pre Parcial 1 */}
       {pantalla === "mod3-pre1" && (
         <>
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
@@ -125,7 +126,17 @@ export default function App() {
         </>
       )}
 
-      {/* PLACEHOLDERS para futuros cuestionarios del M3 */}
+      {/* M3 – Prueba (57 preguntas) */}
+      {pantalla === "mod3-prueba" && (
+        <>
+          <button className="btn-volver" onClick={() => go("mod3-menu")}>
+            ← Volver a Módulo 3
+          </button>
+          <CuestionarioPruebaM3 />
+        </>
+      )}
+
+      {/* PLACEHOLDERS futuros del M3 */}
       {["mod3-pre2", "mod3-final"].includes(pantalla) && (
         <div className="pantalla-inicio">
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
