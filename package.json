@@ -1,7 +1,7 @@
 {
   "name": "trivia-cafh-modulo3-app",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.2",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,7 +9,12 @@
     "preview": "vite preview",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist",
-    "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\""
+    "deploy:clean": "gh-pages -d dist -f",
+    "deploy:force": "npm run clean && npm run build && npm run deploy:clean",
+    "clean": "rmdir /s /q dist 2>nul && rmdir /s /q node_modules\\.vite 2>nul || echo Carpetas limpiadas",
+    "clean:unix": "rm -rf dist node_modules/.vite",
+    "postbuild": "node -e \"require('fs').copyFileSync('dist/index.html','dist/404.html')\"",
+    "version:bump": "node -e \"console.log('Recuerda actualizar APP_VERSION en App.jsx')\""
   },
   "dependencies": {
     "react": "^19.1.1",

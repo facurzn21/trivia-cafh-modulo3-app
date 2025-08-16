@@ -18,6 +18,45 @@ export default function App() {
   };
 
   useEffect(() => {
+    // ========== CONTROL DE CACHÉ ==========
+    // Forzar recarga si hay una nueva versión
+    const APP_VERSION = "1.0.2"; // Cambia este número cuando hagas cambios importantes
+    const versionGuardada = localStorage.getItem("appVersion");
+    
+    if (versionGuardada !== APP_VERSION) {
+      console.log("Nueva versión detectada, limpiando caché...");
+      localStorage.setItem("appVersion", APP_VERSION);
+      
+      // Limpiar caché del navegador si es posible
+      if ('caches' in window) {
+        caches.keys().then(names => {
+          names.forEach(name => {
+            caches.delete(name);
+          });
+        });
+      }
+      
+      // Opcional: Recargar la página automáticamente
+      // window.location.reload(true);
+    }
+    
+    // Añadir meta tags para prevenir caché
+    const metaNoCache = document.createElement('meta');
+    metaNoCache.httpEquiv = 'Cache-Control';
+    metaNoCache.content = 'no-cache, no-store, must-revalidate';
+    document.head.appendChild(metaNoCache);
+    
+    const metaPragma = document.createElement('meta');
+    metaPragma.httpEquiv = 'Pragma';
+    metaPragma.content = 'no-cache';
+    document.head.appendChild(metaPragma);
+    
+    const metaExpires = document.createElement('meta');
+    metaExpires.httpEquiv = 'Expires';
+    metaExpires.content = '0';
+    document.head.appendChild(metaExpires);
+    // ========================================
+
     const heartbeat = setInterval(
       () => console.log("Manteniendo la sesión activa..."),
       5 * 60 * 1000
