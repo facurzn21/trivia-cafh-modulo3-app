@@ -470,4 +470,19 @@ body {
   border-radius: var(--radio);  /* usa tu variable */
 }
 
+.opcion.seleccionada {
+  background-color: #e0e7ff !important;
+  border-color: #6366f1 !important;
+  border-width: 2px !important;
+}
+
+.opciones-container .opcion {
+  transition: all 0.2s ease;
+}
+
+.opciones-container .opcion:hover:not(:disabled) {
+  transform: translateX(5px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
 }

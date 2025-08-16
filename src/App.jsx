@@ -20,7 +20,7 @@ export default function App() {
   useEffect(() => {
     // ========== CONTROL DE CACHÉ ==========
     // Forzar recarga si hay una nueva versión
-    const APP_VERSION = "1.0.2"; // Cambia este número cuando hagas cambios importantes
+    const APP_VERSION = "1.0.3"; // Cambia este número cuando hagas cambios importantes
     const versionGuardada = localStorage.getItem("appVersion");
     
     if (versionGuardada !== APP_VERSION) {

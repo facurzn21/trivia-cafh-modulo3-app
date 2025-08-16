@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 
 // Función para mezclar array (Fisher-Yates shuffle)
+// IMPORTANTE: Preservamos el objeto completo con sus índices originales
 function mezclarArray(array) {
   const mezclado = [...array];
   for (let i = mezclado.length - 1; i > 0; i--) {
@@ -24,6 +25,7 @@ function Cuestionario({ titulo, preguntas }) {
 
   // estado por pregunta
   const [seleccion, setSeleccion] = useState(new Set());
+  const [seleccionOriginal, setSeleccionOriginal] = useState(new Set()); // Guardar selección del usuario
   const [confirmado, setConfirmado] = useState(false);
   const [mostrarExplicacion, setMostrarExplicacion] = useState(false);
 
@@ -50,7 +52,8 @@ function Cuestionario({ titulo, preguntas }) {
     if (!esMultiple) {
       const s = new Set([idx]);
       setSeleccion(s);
-      confirmar(s);
+      // Pequeño delay para que se vea la selección antes de confirmar
+      setTimeout(() => confirmar(s), 100);
       return;
     }
 
@@ -65,14 +68,48 @@ function Cuestionario({ titulo, preguntas }) {
 
   const confirmar = (sel = seleccion) => {
     if (confirmado) return;
-    const correcto = setsIguales(sel, correctSet);
     
-    if (correcto) {
-      setPuntuacion(p => p + 1); // +1 punto por respuesta correcta
-      setRespuestasCorrectas(c => c + 1);
+    // Guardar la selección original del usuario
+    setSeleccionOriginal(new Set(sel));
+    
+    // Sistema de puntuación parcial para preguntas múltiples
+    if (esMultiple) {
+      const totalCorrectas = correctSet.size;
+      let puntosGanados = 0;
+      let puntosPerdidos = 0;
+      
+      // Calcular puntos por cada opción
+      sel.forEach(idx => {
+        if (correctSet.has(idx)) {
+          puntosGanados += (1 / totalCorrectas); // Fracción del punto total
+        } else {
+          puntosPerdidos += 0.25; // Penalización por incorrecta
+        }
+      });
+      
+      // Calcular puntuación neta
+      const puntuacionNeta = puntosGanados - puntosPerdidos;
+      
+      // Actualizar puntuación total
+      setPuntuacion(p => p + puntuacionNeta);
+      
+      // Actualizar contadores
+      if (puntuacionNeta > 0) {
+        setRespuestasCorrectas(c => c + 1);
+      } else if (puntuacionNeta < 0) {
+        setRespuestasIncorrectas(i => i + 1);
+      }
     } else {
-      setPuntuacion(p => p - 0.5); // -0.5 puntos por respuesta incorrecta
-      setRespuestasIncorrectas(i => i + 1);
+      // Para preguntas simples, mantener sistema original
+      const correcto = setsIguales(sel, correctSet);
+      
+      if (correcto) {
+        setPuntuacion(p => p + 1);
+        setRespuestasCorrectas(c => c + 1);
+      } else {
+        setPuntuacion(p => p - 0.5);
+        setRespuestasIncorrectas(i => i + 1);
+      }
     }
     
     setMostrarExplicacion(true);
@@ -84,6 +121,7 @@ function Cuestionario({ titulo, preguntas }) {
     if (next < preguntasMezcladas.length) {
       setPreguntaActual(next);
       setSeleccion(new Set());
+      setSeleccionOriginal(new Set());
       setConfirmado(false);
       setMostrarExplicacion(false);
     } else {
@@ -100,6 +138,7 @@ function Cuestionario({ titulo, preguntas }) {
     setRespuestasIncorrectas(0);
     setMostrarResultado(false);
     setSeleccion(new Set());
+    setSeleccionOriginal(new Set());
     setConfirmado(false);
     setMostrarExplicacion(false);
   };
@@ -153,26 +192,89 @@ function Cuestionario({ titulo, preguntas }) {
 
               <div className="opciones-container">
                 {actual.opciones.map((op, idx) => {
+                  // Usar seleccionOriginal después de confirmar
+                  const estaSeleccionada = confirmado ? seleccionOriginal.has(idx) : seleccion.has(idx);
+                  const esCorrecta = correctSet.has(idx);
+                  
                   // Estilos según estado
                   let cls = 'opcion';
-                  const estaSeleccionada = seleccion.has(idx);
+                  
                   if (!confirmado) {
                     if (estaSeleccionada) cls += ' seleccionada';
                   } else {
-                    const esCorrecta = correctSet.has(idx);
-                    if (esCorrecta) cls += ' correcta';
+                    if (esCorrecta && estaSeleccionada) cls += ' correcta';
                     else if (estaSeleccionada && !esCorrecta) cls += ' incorrecta';
+                    else if (esCorrecta && !estaSeleccionada) cls += ' no-seleccionada-correcta';
                     else cls += ' deshabilitada';
                   }
+
+                  // Agregar indicador visual para múltiple opción
+                  const indicador = esMultiple ? (
+                    <span style={{ 
+                      marginRight: '10px', 
+                      display: 'inline-block',
+                      width: '20px',
+                      height: '20px',
+                      border: '2px solid',
+                      borderColor: confirmado ? 
+                        (esCorrecta ? '#4CAF50' : (estaSeleccionada ? '#f44336' : '#999')) : 
+                        (estaSeleccionada ? '#6366f1' : '#666'),
+                      borderRadius: '4px',
+                      backgroundColor: confirmado ? 
+                        (estaSeleccionada ? (esCorrecta ? '#4CAF50' : '#f44336') : 'transparent') :
+                        (estaSeleccionada ? '#6366f1' : 'transparent'),
+                      verticalAlign: 'middle',
+                      position: 'relative'
+                    }}>
+                      {estaSeleccionada && (
+                        <span style={{
+                          position: 'absolute',
+                          left: '3px',
+                          top: '-2px',
+                          color: 'white',
+                          fontSize: '14px',
+                          fontWeight: 'bold'
+                        }}>✓</span>
+                      )}
+                      {confirmado && esCorrecta && !estaSeleccionada && (
+                        <span style={{
+                          position: 'absolute',
+                          left: '5px',
+                          top: '-2px',
+                          color: '#4CAF50',
+                          fontSize: '14px',
+                          fontWeight: 'bold'
+                        }}>✓</span>
+                      )}
+                    </span>
+                  ) : null;
 
                   return (
                     <button
                       key={idx}
                       onClick={() => toggleOpcion(idx)}
-                      disabled={confirmado && !correctSet.has(idx)}
+                      disabled={confirmado}
                       className={cls}
+                      style={{
+                        backgroundColor: confirmado ? 
+                          (esCorrecta && estaSeleccionada ? '#c8e6c9' : 
+                           estaSeleccionada && !esCorrecta ? '#ffcdd2' :
+                           esCorrecta && !estaSeleccionada ? '#e8f5e9' : 
+                           undefined) :
+                          (estaSeleccionada ? '#e0e7ff' : undefined),
+                        borderColor: confirmado ?
+                          (esCorrecta ? '#4CAF50' : 
+                           estaSeleccionada && !esCorrecta ? '#f44336' : undefined) :
+                          (estaSeleccionada ? '#6366f1' : undefined),
+                        borderWidth: (estaSeleccionada || (confirmado && esCorrecta)) ? '2px' : undefined,
+                        opacity: confirmado && esCorrecta && !estaSeleccionada ? 0.7 : 1,
+                        textAlign: 'left',
+                        display: 'flex',
+                        alignItems: 'center'
+                      }}
                     >
-                      {op}
+                      {indicador}
+                      <span>{op}</span>
                     </button>
                   );
                 })}
@@ -184,14 +286,86 @@ function Cuestionario({ titulo, preguntas }) {
                 padding: '10px', 
                 margin: '10px 0', 
                 borderRadius: '5px',
-                backgroundColor: setsIguales(seleccion, correctSet) ? '#e8f5e9' : '#ffebee'
+                backgroundColor: esMultiple ? 
+                  ((() => {
+                    // Calcular puntuación para determinar color de fondo
+                    const totalCorrectas = correctSet.size;
+                    let puntosGanados = 0;
+                    let puntosPerdidos = 0;
+                    
+                    seleccionOriginal.forEach(idx => {
+                      if (correctSet.has(idx)) {
+                        puntosGanados += (1 / totalCorrectas);
+                      } else {
+                        puntosPerdidos += 0.25;
+                      }
+                    });
+                    
+                    const puntuacionNeta = puntosGanados - puntosPerdidos;
+                    return puntuacionNeta > 0 ? '#e8f5e9' : puntuacionNeta < 0 ? '#ffebee' : '#fff3e0';
+                  })()) :
+                  (setsIguales(seleccionOriginal, correctSet) ? '#e8f5e9' : '#ffebee')
               }}>
                 <p style={{ 
                   fontWeight: 'bold', 
-                  color: setsIguales(seleccion, correctSet) ? '#4CAF50' : '#f44336',
-                  marginBottom: '5px'
+                  marginBottom: '10px'
                 }}>
-                  {setsIguales(seleccion, correctSet) ? '✓ ¡Correcto! (+1 punto)' : '✗ Incorrecto (-0.5 puntos)'}
+                  {esMultiple ? (
+                    (() => {
+                      // Calcular y mostrar puntuación detallada
+                      const totalCorrectas = correctSet.size;
+                      let correctasSeleccionadas = 0;
+                      let incorrectasSeleccionadas = 0;
+                      
+                      seleccionOriginal.forEach(idx => {
+                        if (correctSet.has(idx)) {
+                          correctasSeleccionadas++;
+                        } else {
+                          incorrectasSeleccionadas++;
+                        }
+                      });
+                      
+                      const puntosGanados = correctasSeleccionadas * (1 / totalCorrectas);
+                      const puntosPerdidos = incorrectasSeleccionadas * 0.25;
+                      const puntuacionNeta = puntosGanados - puntosPerdidos;
+                      
+                      return (
+                        <>
+                          <span style={{ 
+                            color: puntuacionNeta > 0 ? '#4CAF50' : puntuacionNeta < 0 ? '#f44336' : '#ff9800' 
+                          }}>
+                            {puntuacionNeta > 0 ? '✓ Parcialmente correcto' : 
+                             puntuacionNeta < 0 ? '✗ Incorrecto' : 
+                             '≈ Neutral'} 
+                            ({puntuacionNeta > 0 ? '+' : ''}{puntuacionNeta.toFixed(2)} puntos)
+                          </span>
+                          <div style={{ fontSize: '0.9em', marginTop: '5px', color: '#666' }}>
+                            • Acertaste {correctasSeleccionadas} de {totalCorrectas} correctas 
+                            (+{puntosGanados.toFixed(2)} pts)
+                            {incorrectasSeleccionadas > 0 && (
+                              <>
+                                <br />• Marcaste {incorrectasSeleccionadas} incorrecta(s) 
+                                (-{puntosPerdidos.toFixed(2)} pts)
+                              </>
+                            )}
+                            {correctasSeleccionadas < totalCorrectas && (
+                              <>
+                                <br />• Te faltaron {totalCorrectas - correctasSeleccionadas} correcta(s)
+                              </>
+                            )}
+                          </div>
+                        </>
+                      );
+                    })()
+                  ) : (
+                    <span style={{ 
+                      color: setsIguales(seleccionOriginal, correctSet) ? '#4CAF50' : '#f44336' 
+                    }}>
+                      {setsIguales(seleccionOriginal, correctSet) ? 
+                        '✓ ¡Correcto! (+1 punto)' : 
+                        '✗ Incorrecto (-0.5 puntos)'}
+                    </span>
+                  )}
                 </p>
                 {actual.explicacion && (
                   <>
