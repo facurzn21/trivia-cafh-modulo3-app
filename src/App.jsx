@@ -7,6 +7,7 @@ import CuestionarioTeoricoResumenM3 from "./modules/modulo3/CuestionarioTeoricoR
 import CuestionarioTeoricoResumenVersion2 from "./modules/modulo3/CuestionarioTeoricoResumenVersion2.jsx";
 import CuestionarioResistenciaBacteriana from "./modules/modulo3/CuestionarioResistenciaBacteriana.jsx";
 import CuestionarioATB from "./modules/modulo3/CuestionarioATB.jsx";
+import CuestionarioAntimicoticosAntiparasitarios from "./modules/modulo3/CuestionarioAntimicoticosAntiparasitarios.jsx";
 
 export default function App() {
   const [pantalla, setPantalla] = useState(
@@ -20,7 +21,7 @@ export default function App() {
 
   useEffect(() => {
     // ========== CONTROL DE CACHÉ ==========
-    const APP_VERSION = "1.0.6"; // 👈 subo versión
+    const APP_VERSION = "1.0.8"; // 
     const versionGuardada = localStorage.getItem("appVersion");
 
     if (versionGuardada !== APP_VERSION) {
