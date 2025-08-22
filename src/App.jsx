@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import "./index.css";
 
-// 👇 M3
 import CuestionarioPreParcial1 from "./modules/modulo3/CuestionarioPreParcial1.jsx";
 import CuestionarioPruebaM3 from "./modules/modulo3/CuestionarioPruebaM3.jsx";
 import CuestionarioTeoricoResumenM3 from "./modules/modulo3/CuestionarioTeoricoResumenM3.jsx";
 import CuestionarioTeoricoResumenVersion2 from "./modules/modulo3/CuestionarioTeoricoResumenVersion2.jsx";
+import CuestionarioResistenciaBacteriana from "./modules/modulo3/CuestionarioResistenciaBacteriana.jsx";
+import CuestionarioATB from "./modules/modulo3/CuestionarioATB.jsx";
 
 export default function App() {
   const [pantalla, setPantalla] = useState(
@@ -19,43 +20,35 @@ export default function App() {
 
   useEffect(() => {
     // ========== CONTROL DE CACHÉ ==========
-    // Forzar recarga si hay una nueva versión
-    const APP_VERSION = "1.0.3"; // Cambia este número cuando hagas cambios importantes
+    const APP_VERSION = "1.0.6"; // 👈 subo versión
     const versionGuardada = localStorage.getItem("appVersion");
-    
+
     if (versionGuardada !== APP_VERSION) {
-      console.log("Nueva versión detectada, limpiando caché...");
+      console.log("Nueva versión detectada, limpiando caché…");
       localStorage.setItem("appVersion", APP_VERSION);
-      
-      // Limpiar caché del navegador si es posible
-      if ('caches' in window) {
-        caches.keys().then(names => {
-          names.forEach(name => {
-            caches.delete(name);
-          });
-        });
+
+      if ("caches" in window) {
+        caches.keys().then((names) => names.forEach((n) => caches.delete(n)));
       }
-      
-      // Opcional: Recargar la página automáticamente
+      // Si querés recargar automáticamente al detectar versión nueva:
       // window.location.reload(true);
     }
-    
-    // Añadir meta tags para prevenir caché
-    const metaNoCache = document.createElement('meta');
-    metaNoCache.httpEquiv = 'Cache-Control';
-    metaNoCache.content = 'no-cache, no-store, must-revalidate';
+
+    const metaNoCache = document.createElement("meta");
+    metaNoCache.httpEquiv = "Cache-Control";
+    metaNoCache.content = "no-cache, no-store, must-revalidate";
     document.head.appendChild(metaNoCache);
-    
-    const metaPragma = document.createElement('meta');
-    metaPragma.httpEquiv = 'Pragma';
-    metaPragma.content = 'no-cache';
+
+    const metaPragma = document.createElement("meta");
+    metaPragma.httpEquiv = "Pragma";
+    metaPragma.content = "no-cache";
     document.head.appendChild(metaPragma);
-    
-    const metaExpires = document.createElement('meta');
-    metaExpires.httpEquiv = 'Expires';
-    metaExpires.content = '0';
+
+    const metaExpires = document.createElement("meta");
+    metaExpires.httpEquiv = "Expires";
+    metaExpires.content = "0";
     document.head.appendChild(metaExpires);
-    // ========================================
+    // ======================================
 
     const heartbeat = setInterval(
       () => console.log("Manteniendo la sesión activa..."),
@@ -73,7 +66,7 @@ export default function App() {
     };
   }, []);
 
-  // menú principal: habilitamos solo Módulo 3
+  // menú principal (solo habilito Módulo 3)
   const modulos = [
     { id: 1, label: "Módulo 1", disponible: false },
     { id: 2, label: "Módulo 2", disponible: false },
@@ -82,12 +75,14 @@ export default function App() {
     { id: 5, label: "Módulo 5", disponible: false },
   ];
 
-  // menú del Módulo 3 (solo los 4 que querés ver)
+  // menú Módulo 3 — solo los activos (sin "próximamente")
   const cuestionariosM3 = [
-    { key: "mod3-pre1",       title: "Pre Parcial 1",          sub: "CAFH", habilitado: true },
-    { key: "mod3-prueba",     title: "Prueba (57 preguntas)",  sub: "CAFH", habilitado: true },
-    { key: "mod3-teorico1",   title: "Teórico (Resumen) Claude IA",       sub: "CAFH", habilitado: true },
-    { key: "mod3-teorico2",   title: "Teórico (Resumen v2) ChatGPT",    sub: "CAFH", habilitado: true },
+    { key: "mod3-pre1", title: "Pre Parcial 1", sub: "CAFH", habilitado: true },
+    { key: "mod3-prueba", title: "Prueba (57 preguntas)", sub: "CAFH", habilitado: true },
+    { key: "mod3-teorico1", title: "Teórico (Resumen) Claude IA", sub: "CAFH", habilitado: true },
+    { key: "mod3-teorico2", title: "Teórico (Resumen v2) ChatGPT", sub: "CAFH", habilitado: true },
+    { key: "mod3-ram", title: "Resistencia bacteriana", sub: "CAFH", habilitado: true },
+    { key: "mod3-atb", title: "Antibióticos (PDF UDELAR)", sub: "CAFH", habilitado: true },
   ];
 
   return (
@@ -156,7 +151,7 @@ export default function App() {
         </div>
       )}
 
-      {/* M3 – Pre Parcial 1 */}
+      {/* M3 — Pre Parcial 1 */}
       {pantalla === "mod3-pre1" && (
         <>
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
@@ -166,7 +161,7 @@ export default function App() {
         </>
       )}
 
-      {/* M3 – Prueba (57 preguntas) */}
+      {/* M3 — Prueba (57) */}
       {pantalla === "mod3-prueba" && (
         <>
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
@@ -176,7 +171,7 @@ export default function App() {
         </>
       )}
 
-      {/* M3 – Teórico (Resumen) */}
+      {/* M3 — Teórico (Resumen) */}
       {pantalla === "mod3-teorico1" && (
         <>
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
@@ -186,13 +181,33 @@ export default function App() {
         </>
       )}
 
-      {/* M3 – Teórico (Resumen v2) */}
+      {/* M3 — Teórico (Resumen v2) */}
       {pantalla === "mod3-teorico2" && (
         <>
           <button className="btn-volver" onClick={() => go("mod3-menu")}>
             ← Volver a Módulo 3
           </button>
           <CuestionarioTeoricoResumenVersion2 />
+        </>
+      )}
+
+      {/* M3 — Resistencia bacteriana */}
+      {pantalla === "mod3-ram" && (
+        <>
+          <button className="btn-volver" onClick={() => go("mod3-menu")}>
+            ← Volver a Módulo 3
+          </button>
+          <CuestionarioResistenciaBacteriana />
+        </>
+      )}
+
+      {/* M3 — Antibióticos */}
+      {pantalla === "mod3-atb" && (
+        <>
+          <button className="btn-volver" onClick={() => go("mod3-menu")}>
+            ← Volver a Módulo 3
+          </button>
+          <CuestionarioATB />
         </>
       )}
     </div>
