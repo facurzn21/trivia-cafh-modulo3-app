@@ -8,6 +8,7 @@ import CuestionarioTeoricoResumenVersion2 from "./modules/modulo3/CuestionarioTe
 import CuestionarioResistenciaBacteriana from "./modules/modulo3/CuestionarioResistenciaBacteriana.jsx";
 import CuestionarioATB from "./modules/modulo3/CuestionarioATB.jsx";
 import CuestionarioAntimicoticosAntiparasitarios from "./modules/modulo3/CuestionarioAntimicoticosAntiparasitarios.jsx";
+import MedicamentosAntineoplasticos2024 from "./modules/modulo3/MedicamentosAntineoplasticos2024.jsx";
 
 export default function App() {
   const [pantalla, setPantalla] = useState(
@@ -21,7 +22,7 @@ export default function App() {
 
   useEffect(() => {
     // ========== CONTROL DE CACHÉ ==========
-    const APP_VERSION = "1.0.8"; // 
+    const APP_VERSION = "1.0.9"; // 
     const versionGuardada = localStorage.getItem("appVersion");
 
     if (versionGuardada !== APP_VERSION) {
@@ -85,6 +86,7 @@ export default function App() {
     { key: "mod3-ram", title: "Resistencia bacteriana", sub: "CAFH", habilitado: true },
     { key: "mod3-atb", title: "Antibióticos (PDF UDELAR)", sub: "CAFH", habilitado: true },
     { key: "mod3-antimic-antiparas", title: "Antimicóticos y Antiparasitarios", sub: "CAFH", habilitado: true },
+     { key: "mod3-onco2024", title: "Antineoplásicos 2024", sub: "CAFH", habilitado: true },
   ];
 
   return (
@@ -221,6 +223,15 @@ export default function App() {
       <CuestionarioAntimicoticosAntiparasitarios />
     </>
   )}
-  </div>
+
+  {pantalla === "mod3-onco2024" && (
+  <>
+    <button className="btn-volver" onClick={() => go("mod3-menu")}>
+      ← Volver a Módulo 3
+    </button>
+    <MedicamentosAntineoplasticos2024 />
+  </>
+)}
+</div>
   );
 }
