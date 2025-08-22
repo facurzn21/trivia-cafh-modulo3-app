@@ -83,6 +83,7 @@ export default function App() {
     { key: "mod3-teorico2", title: "Teórico (Resumen v2) ChatGPT", sub: "CAFH", habilitado: true },
     { key: "mod3-ram", title: "Resistencia bacteriana", sub: "CAFH", habilitado: true },
     { key: "mod3-atb", title: "Antibióticos (PDF UDELAR)", sub: "CAFH", habilitado: true },
+    { key: "mod3-antimic-antiparas", title: "Antimicóticos y Antiparasitarios", sub: "CAFH", habilitado: true },
   ];
 
   return (
@@ -210,6 +211,15 @@ export default function App() {
           <CuestionarioATB />
         </>
       )}
-    </div>
+
+      {pantalla === "mod3-antimic-antiparas" && (
+    <>
+      <button className="btn-volver" onClick={() => go("mod3-menu")}>
+        ← Volver a Módulo 3
+      </button>
+      <CuestionarioAntimicoticosAntiparasitarios />
+    </>
+  )}
+  </div>
   );
 }
